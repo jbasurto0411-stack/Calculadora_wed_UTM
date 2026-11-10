@@ -1,0 +1,272 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Calculadora</title>
+  <link href="https://fonts.googleapis.com/css2?family=Space+Mono:wght@400;700&display=swap" rel="stylesheet" />
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      font-family: 'Space Mono', monospace;
+      background: #f0f0ec;
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    @media (prefers-color-scheme: dark) {
+      body { background: #1a1a18; }
+    }
+
+    .calc {
+      background: #ffffff;
+      border: 1px solid #e0dfd8;
+      border-radius: 24px;
+      width: 320px;
+      padding: 1.5rem;
+    }
+
+    @media (prefers-color-scheme: dark) {
+      .calc { background: #2c2c2a; border-color: #444441; }
+    }
+
+    .display {
+      background: #f1efe8;
+      border-radius: 16px;
+      padding: 1.25rem 1.25rem 1rem;
+      margin-bottom: 1.25rem;
+      min-height: 110px;
+      display: flex;
+      flex-direction: column;
+      justify-content: flex-end;
+      align-items: flex-end;
+      border: 1px solid #d3d1c7;
+    }
+
+    @media (prefers-color-scheme: dark) {
+      .display { background: #1a1a18; border-color: #444441; }
+    }
+
+    .display-hist {
+      font-size: 13px;
+      color: #888780;
+      min-height: 20px;
+      word-break: break-all;
+      text-align: right;
+    }
+
+    .display-main {
+      font-size: 36px;
+      font-weight: 700;
+      color: #2c2c2a;
+      word-break: break-all;
+      text-align: right;
+      line-height: 1.1;
+    }
+
+    @media (prefers-color-scheme: dark) {
+      .display-main { color: #f1efe8; }
+    }
+
+    .grid {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 10px;
+    }
+
+    .btn {
+      font-family: 'Space Mono', monospace;
+      font-weight: 700;
+      font-size: 16px;
+      border: none;
+      border-radius: 14px;
+      height: 62px;
+      cursor: pointer;
+      transition: transform 0.08s, background 0.12s;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .btn:active { transform: scale(0.93); }
+
+    .btn-num {
+      background: #ffffff;
+      border: 1px solid #d3d1c7;
+      color: #2c2c2a;
+    }
+    .btn-num:hover { background: #f1efe8; }
+
+    @media (prefers-color-scheme: dark) {
+      .btn-num { background: #444441; border-color: #5f5e5a; color: #f1efe8; }
+      .btn-num:hover { background: #5f5e5a; }
+    }
+
+    .btn-op {
+      background: #EAF3DE;
+      color: #3B6D11;
+      border: 1px solid #C0DD97;
+    }
+    .btn-op:hover { background: #C0DD97; }
+
+    @media (prefers-color-scheme: dark) {
+      .btn-op { background: #17340466; color: #C0DD97; border-color: #3B6D1188; }
+      .btn-op:hover { background: #27500A99; }
+    }
+
+    .btn-clear {
+      background: #FCEBEB;
+      color: #A32D2D;
+      border: 1px solid #F7C1C1;
+    }
+    .btn-clear:hover { background: #F7C1C1; }
+
+    @media (prefers-color-scheme: dark) {
+      .btn-clear { background: #50131366; color: #F09595; border-color: #A32D2D88; }
+      .btn-clear:hover { background: #791F1F88; }
+    }
+
+    .btn-del {
+      background: #FAEEDA;
+      color: #633806;
+      border: 1px solid #FAC775;
+    }
+    .btn-del:hover { background: #FAC775; }
+
+    @media (prefers-color-scheme: dark) {
+      .btn-del { background: #41240266; color: #FAC775; border-color: #85490B88; }
+      .btn-del:hover { background: #63380688; }
+    }
+
+    .btn-eq {
+      background: #3B6D11;
+      color: #EAF3DE;
+      border: none;
+      font-size: 22px;
+    }
+    .btn-eq:hover { background: #27500A; }
+
+    @media (prefers-color-scheme: dark) {
+      .btn-eq { background: #639922; color: #EAF3DE; }
+      .btn-eq:hover { background: #3B6D11; }
+    }
+
+    .span2 { grid-column: span 2; }
+  </style>
+</head>
+<body>
+  <div class="calc">
+    <div class="display">
+      <div class="display-hist" id="hist">&nbsp;</div>
+      <div class="display-main" id="main">0</div>
+    </div>
+    <div class="grid">
+      <button class="btn btn-clear span2" onclick="clearAll()">AC</button>
+      <button class="btn btn-del"         onclick="del()">⌫</button>
+      <button class="btn btn-op"          onclick="op('%')">%</button>
+
+      <button class="btn btn-num" onclick="num('7')">7</button>
+      <button class="btn btn-num" onclick="num('8')">8</button>
+      <button class="btn btn-num" onclick="num('9')">9</button>
+      <button class="btn btn-op"  onclick="op('/')">÷</button>
+
+      <button class="btn btn-num" onclick="num('4')">4</button>
+      <button class="btn btn-num" onclick="num('5')">5</button>
+      <button class="btn btn-num" onclick="num('6')">6</button>
+      <button class="btn btn-op"  onclick="op('*')">×</button>
+
+      <button class="btn btn-num" onclick="num('1')">1</button>
+      <button class="btn btn-num" onclick="num('2')">2</button>
+      <button class="btn btn-num" onclick="num('3')">3</button>
+      <button class="btn btn-op"  onclick="op('-')">−</button>
+
+      <button class="btn btn-num span2" onclick="num('0')">0</button>
+      <button class="btn btn-num"       onclick="dot()">.</button>
+      <button class="btn btn-op"        onclick="op('+')">+</button>
+
+      <button class="btn btn-eq span2"  onclick="eq()">=</button>
+      <button class="btn btn-op span2"  onclick="toggleSign()">+/−</button>
+    </div>
+  </div>
+
+  <script>
+    let cur = '0', prev = '', operator = '', justEq = false;
+    const mainEl = document.getElementById('main');
+    const histEl = document.getElementById('hist');
+
+    function upd() {
+      let d = cur.length > 12
+        ? parseFloat(cur).toPrecision(10).replace(/\.?0+$/, '')
+        : cur;
+      mainEl.textContent = d;
+    }
+
+    function num(n) {
+      if (justEq) { cur = '0'; justEq = false; }
+      if (cur === '0' && n !== '.') cur = n;
+      else if (cur.length < 15) cur += n;
+      upd();
+    }
+
+    function dot() {
+      if (justEq) { cur = '0'; justEq = false; }
+      if (!cur.includes('.')) cur += '.';
+      upd();
+    }
+
+    function op(o) {
+      justEq = false;
+      if (operator && prev !== '') {
+        let r = calc();
+        cur = String(r);
+        upd();
+      }
+      prev = cur;
+      operator = o;
+      cur = '0';
+      const sym = { '/': '÷', '*': '×', '-': '−', '+': '+', '%': '%' }[o] || o;
+      histEl.textContent = prev + ' ' + sym;
+    }
+
+    function calc() {
+      let a = parseFloat(prev), b = parseFloat(cur);
+      if (operator === '/') return b === 0 ? 'Error' : +((a / b).toPrecision(10).replace(/\.?0+$/, ''));
+      if (operator === '*') return +((a * b).toPrecision(10).replace(/\.?0+$/, ''));
+      if (operator === '-') return +((a - b).toPrecision(10).replace(/\.?0+$/, ''));
+      if (operator === '+') return +((a + b).toPrecision(10).replace(/\.?0+$/, ''));
+      if (operator === '%') return +((a * b / 100).toPrecision(10).replace(/\.?0+$/, ''));
+      return b;
+    }
+
+    function eq() {
+      if (!operator || prev === '') return;
+      let r = calc();
+      const sym = { '/': '÷', '*': '×', '-': '−', '+': '+', '%': '%' }[operator] || operator;
+      histEl.textContent = prev + ' ' + sym + ' ' + cur + ' =';
+      cur = String(r);
+      prev = ''; operator = ''; justEq = true;
+      upd();
+    }
+
+    function clearAll() {
+      cur = '0'; prev = ''; operator = ''; justEq = false;
+      histEl.textContent = '\u00a0';
+      upd();
+    }
+
+    function del() {
+      if (justEq) { clearAll(); return; }
+      cur = cur.length > 1 ? cur.slice(0, -1) : '0';
+      upd();
+    }
+
+    function toggleSign() {
+      if (cur !== '0') cur = cur.startsWith('-') ? cur.slice(1) : '-' + cur;
+      upd();
+    }
+  </script>
+</body>
+</html>
